@@ -13,8 +13,25 @@ class Booking extends Model
           'seat_id',
           'event_id',
           'booked_at',
+
+          'total_amount',
+          'currency',
+          'payment_gateway',
+          'payment_status',
+          'stripe_checkout_session_id',
+          'stripe_payment_intent_id',
+          'platform_fee_amount',
+          'vendor_amount',
+          'paid_at',
+          'stripe_payload',
     ];
    
+
+    protected $casts = [
+        'booked_at' => 'datetime',
+        'paid_at' => 'datetime',
+        'stripe_payload' => 'array',
+    ];
 
 
     // this booking belog to which user

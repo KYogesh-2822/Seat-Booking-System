@@ -35,5 +35,12 @@ return [
         ],
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'currency' => env('STRIPE_CURRENCY', 'inr'),
+        'platform_commission_percent' => (float) env('PLATFORM_COMMISSION_PERCENT', 10),
+    ],
    
 ];

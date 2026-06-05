@@ -8,14 +8,21 @@ class Event extends Model
 {
     protected $table = 'events';
     protected $fillable = [
+          'admin_id',
           'event_name',
           'event_venue',
           'event_date',
+          'ticket_price',
+          'currency',
           'total_rows',
           'total_columns',
       ];
 
 
+      public function vendor()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
+    }
 
     //   an event has all seats for that event 
 

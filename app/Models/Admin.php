@@ -16,6 +16,11 @@ class Admin extends Authenticatable
         'email',
         'password',
         'role',
+        'stripe_account_id',
+        'stripe_details_submitted',
+        'stripe_charges_enabled',
+        'stripe_payouts_enabled',
+        'stripe_onboarded_at',
     ];
 
     protected $hidden = [
@@ -23,10 +28,15 @@ class Admin extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
+     protected function casts(): array
     {
         return [
             'password' => 'hashed',
+
+            'stripe_details_submitted' => 'boolean',
+            'stripe_charges_enabled' => 'boolean',
+            'stripe_payouts_enabled' => 'boolean',
+            'stripe_onboarded_at' => 'datetime',
         ];
     }
 
@@ -38,5 +48,10 @@ class Admin extends Authenticatable
     public function isVendor(): bool
     {
         return $this->role === 'vendor';
+    }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'admin_id');
     }
 }

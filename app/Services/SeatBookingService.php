@@ -124,6 +124,9 @@ class SeatBookingService
                     'booked_at' => now(),
                     'created_at' => now(),
                     'updated_at' => now(),
+                    'total_amount' => $event->ticket_price,
+                    'currency' => $event->currency ?? 'inr',
+                    'payment_status' => 'pending',
                 ];
             }
 
