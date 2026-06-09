@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AdminAuthController;
+use App\Http\Controllers\admin\StripeConnectController;
 use App\Http\Controllers\Event\EventController;
 
 /*
@@ -34,4 +35,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Only admin-guard users (admin or vendor) can create/edit/update/delete.
 Route::middleware(['auth:admin', 'no-cache'])->group(function () {
     Route::resource('events', EventController::class)->except(['index', 'show']);
+
+    Route::prefix('stripe')->name('stripe.')->group(function () {
+        Route::get('/onboard', [StripeConnectController::class, 'start'])->name('onboard');
+        Route::get('/onboard/refresh', [StripeConnectController::class, 'refresh'])->name('onboard.refresh');
+        Route::get('/onboard/return', [StripeConnectController::class, 'handleReturn'])->name('onboard.return');
+    });
 });

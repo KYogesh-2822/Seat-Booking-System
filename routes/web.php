@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Event\EventController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\booking\BookingController;
 
@@ -67,3 +68,6 @@ use App\Http\Controllers\booking\BookingController;
           ->whereNumber('seat')
           ->name('seats.unlock');
   });
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
+    ->name('stripe.webhook');

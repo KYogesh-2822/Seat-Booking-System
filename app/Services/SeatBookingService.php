@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Event;
 use App\Models\Seat;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -84,6 +85,15 @@ class SeatBookingService
     {
         return DB::transaction(function () use ($eventId, $bookerId, $bookerType) {
 
+
+            $event = Event::find($eventId);
+            if (!$event) {
+                return [
+                    'success' => false,
+                    'message' => 'Event not found. Please try again.',
+                ];
+            }
+
             $seats = Seat::where('event_id', $eventId)
                 ->where('locked_by', $bookerId)
                 ->where('locked_by_type', $bookerType)
@@ -132,6 +142,111 @@ class SeatBookingService
 
             Booking::insert($bookingData);
 
+            Cache::forget("event.{$eventId}.seats");
+
+            return [
+                'success' => true,
+                'seat_count' => $seats->count(),
+            ];
+        });
+    }
+
+    public function finalizeStripeBooking(
+        int $eventId,
+        array $seatIds,
+        int $bookerId,
+        string $bookerType,
+        string $checkoutSessionId,
+        string $paymentIntentId,
+        int $stripeAmount,
+        string $currency,
+        array $stripePayload
+    ): array {
+        if (Booking::where('stripe_checkout_session_id', $checkoutSessionId)->exists()) {
+            return [
+                'success' => true,
+                'message' => 'Booking already completed for this Stripe session.',
+            ];
+        }
+
+        return DB::transaction(function () use (
+            $eventId,
+            $seatIds,
+            $bookerId,
+            $bookerType,
+            $checkoutSessionId,
+            $paymentIntentId,
+            $currency,
+            $stripePayload
+        ) {
+            $event = Event::find($eventId);
+
+            if (!$event) {
+                return [
+                    'success' => false,
+                    'message' => 'Event not found.',
+                ];
+            }
+
+            $seats = Seat::whereIn('id', $seatIds)
+                ->where('event_id', $eventId)
+                ->where('locked_by', $bookerId)
+                ->where('locked_by_type', $bookerType)
+                ->where('status', 'locked')
+                ->lockForUpdate()
+                ->get();
+
+            if ($seats->count() !== count($seatIds)) {
+                return [
+                    'success' => false,
+                    'message' => 'One or more seats are no longer reserved.',
+                ];
+            }
+
+            foreach ($seats as $seat) {
+                if (!$seat->lock_expires_at || Carbon::parse($seat->lock_expires_at)->isPast()) {
+                    return [
+                        'success' => false,
+                        'message' => 'A seat reservation expired before payment was completed.',
+                    ];
+                }
+            }
+
+            $ticketPrice = (int) $event->ticket_price;
+            $platformFeePerSeat = (int) round($ticketPrice * config('services.stripe.platform_commission_percent', 10) / 100);
+            $vendorAmountPerSeat = $ticketPrice - $platformFeePerSeat;
+
+            Seat::whereIn('id', $seatIds)->update([
+                'status' => 'booked',
+                'locked_by' => null,
+                'locked_by_type' => null,
+                'lock_expires_at' => null,
+            ]);
+
+            $bookingData = [];
+            foreach ($seats as $seat) {
+                $bookingData[] = [
+                    'user_id' => $bookerId,
+                    'booker_type' => $bookerType,
+                    'seat_id' => $seat->id,
+                    'event_id' => $eventId,
+                    'booked_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'total_amount' => $ticketPrice,
+                    'currency' => $currency,
+                    'payment_gateway' => 'stripe',
+                    'payment_status' => 'paid',
+                    'stripe_checkout_session_id' => $checkoutSessionId,
+                    'stripe_payment_intent_id' => $paymentIntentId,
+                    'platform_fee_amount' => $platformFeePerSeat,
+                    'vendor_amount' => $vendorAmountPerSeat,
+                    'paid_at' => now(),
+                    'stripe_payload' => $stripePayload,
+                ];
+            }
+
+            Booking::insert($bookingData);
             Cache::forget("event.{$eventId}.seats");
 
             return [

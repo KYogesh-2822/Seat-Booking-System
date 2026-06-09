@@ -6,6 +6,16 @@
 
       <a href="{{ route('home') }}" class="btn btn-primary">← Back to Events</a>
 
+      @auth('admin')
+          @php $currentAdmin = Auth::guard('admin')->user(); @endphp
+          @if($currentAdmin->id === $event->admin_id && !$currentAdmin->isStripeReady())
+              <div class="alert alert-warning">
+                  Your Stripe Connect onboarding is not complete for this event. 
+                  <a href="{{ route('stripe.onboard') }}" class="btn btn-warning btn-sm">Complete Stripe Onboarding</a>
+              </div>
+          @endif
+      @endauth
+
       <div class="event-header">
           <h1>{{ $event->name }}</h1>
           <p><strong>Venue:</strong> {{ $event->event_venue }}</p>

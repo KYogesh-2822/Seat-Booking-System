@@ -19,6 +19,11 @@
       <div class="nav-links">
           @auth('admin')
               <a href="{{ route('events.create') }}" class="btn btn-primary">+ Create Event</a>
+              @if(!Auth::guard('admin')->user()->hasStripeAccount())
+                  <a href="{{ route('stripe.onboard') }}" class="btn btn-warning">Connect Stripe</a>
+              @elseif(!Auth::guard('admin')->user()->isStripeReady())
+                  <a href="{{ route('stripe.onboard.refresh') }}" class="btn btn-warning">Finish Stripe Onboarding</a>
+              @endif
               <span class="nav-user">Hello, {{ Auth::guard('admin')->user()->name }} ({{ Auth::guard('admin')->user()->role }})</span>
               <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
                   @csrf

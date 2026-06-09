@@ -1,5 +1,5 @@
   @extends('layouts.app')                                                                                         
-                                                                                                                    @section('title', 'Confirm Booking')
+  @section('title', 'Confirm Booking')
 
   @section('content')
 

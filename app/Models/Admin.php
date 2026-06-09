@@ -50,6 +50,16 @@ class Admin extends Authenticatable
         return $this->role === 'vendor';
     }
 
+    public function hasStripeAccount(): bool
+    {
+        return !empty($this->stripe_account_id);
+    }
+
+    public function isStripeReady(): bool
+    {
+        return $this->stripe_account_id && $this->stripe_charges_enabled && $this->stripe_payouts_enabled;
+    }
+
     public function events()
     {
         return $this->hasMany(Event::class, 'admin_id');

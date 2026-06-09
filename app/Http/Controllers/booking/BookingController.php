@@ -4,6 +4,7 @@ namespace App\Http\Controllers\booking;
 
 use App\Http\Controllers\Controller;
 use App\Services\SeatBookingService;
+use App\Services\StripePaymentService;
 use App\Support\Booker;
 use Illuminate\Http\Request;
 use App\Models\Event;
@@ -13,9 +14,10 @@ class BookingController extends Controller
 {
     protected $seatBookingService;
 
-    public function __construct(SeatBookingService $seatBookingService)
+    public function __construct(SeatBookingService $seatBookingService, StripePaymentService $stripePaymentService)
     {
         $this->seatBookingService = $seatBookingService;
+        $this->stripePaymentService = $stripePaymentService;
     }
 
     public function initiate(Request $request)
@@ -96,21 +98,35 @@ class BookingController extends Controller
     {
         $booker = Booker::current();
 
-        $result = $this->seatBookingService->confirmBooking(
+        $lockedSeats = $this->seatBookingService->getLockedSeatsForUser(
             $event->id,
             $booker['id'],
             $booker['type']
         );
 
-        if (!$result['success']) {
+        if ($lockedSeats->isEmpty()) {
             return redirect()
                 ->route('events.show', $event->id)
-                ->with('error', $result['message']);
+                ->with('error', 'No active locked seats. Please select seats again.');
         }
 
-        return redirect()
-            ->route('events.show', $event->id)
-            ->with('success', 'Booking confirmed! ' . $result['seat_count'] . ' seat(s) booked successfully.');
+        $vendor = $event->vendor;
+
+        if (!$vendor || !$vendor->isStripeReady()) {
+            return redirect()
+                ->route('events.show', $event->id)
+                ->with('error', 'This vendor has not completed Stripe onboarding yet.');
+        }
+
+        try {
+            $session = $this->stripePaymentService->createCheckoutSession($event, $lockedSeats, $booker);
+        } catch (\Throwable $exception) {
+            return redirect()
+                ->route('events.show', $event->id)
+                ->with('error', 'Unable to start Stripe payment: ' . $exception->getMessage());
+        }
+
+        return redirect($session->url);
     }
 
     // AJAX: lock a single seat when user clicks it. Returns JSON so the JS can update the UI without a page reload.
