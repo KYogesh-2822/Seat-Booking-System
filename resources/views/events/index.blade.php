@@ -4,6 +4,8 @@
 
   @section('content')
 
+   @auth('admin')
+   @endauth
       <h1>Upcoming Events</h1>
 
       @if($events->isEmpty())

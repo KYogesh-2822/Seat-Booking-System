@@ -20,7 +20,10 @@
           @auth('admin')
               <a href="{{ route('events.create') }}" class="btn btn-primary">+ Create Event</a>
               @if(!Auth::guard('admin')->user()->hasStripeAccount())
-                  <a href="{{ route('stripe.onboard') }}" class="btn btn-warning">Connect Stripe</a>
+                    <a href="{{ route('admin.mail-settings.edit', ['environment' => 'test']) }}" class="btn btn-warning">
+                        Edit SMTP Details
+                    </a>         
+              <a href="{{ route('stripe.onboard') }}" class="btn btn-warning">Connect Stripe</a>
               @elseif(!Auth::guard('admin')->user()->isStripeReady())
                   <a href="{{ route('stripe.onboard.refresh') }}" class="btn btn-warning">Finish Stripe Onboarding</a>
               @endif

@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'no-cache' => \App\Http\Middleware\NoCache::class,
+            'mfa.enabled' => \App\Http\Middleware\RequireEnabledMfa::class,
+            'mail.mfa' => \App\Http\Middleware\RequireMailSettingsMfa::class,
+            'no.body.logs' => \App\Http\Middleware\DoNotLogRequestBody::class,
         ]);
 
         $middleware->redirectGuestsTo(function ($request) {

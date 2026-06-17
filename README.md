@@ -152,6 +152,67 @@ The click handler skips the AJAX call when the user is a guest — selection sta
 - `resources/views/events/show.blade.php` — click handler + 5s polling loop.
 - `resources/views/layouts/app.blade.php` — `<meta name="csrf-token">` for AJAX CSRF protection.
 
+## Stripe Connect + Express flow
+
+This app uses Stripe Connect with Express accounts so each vendor/admin can onboard with Stripe and receive event payments automatically.
+
+### Stripe onboarding (Express)
+
+1. `GET /admin/stripe/onboard` → `App\Http\Controllers\admin\StripeConnectController::start`
+   - checks logged-in admin/vendor via `auth:admin`
+   - if no `stripe_account_id`, calls `App\Services\StripeService::createConnectedAccount($admin)`
+   - saves the returned `stripe_account_id` on the admin record
+   - calls `App\Services\StripeService::createAccountLink($admin->stripe_account_id)`
+   - redirects the user to Stripe Express onboarding
+
+2. `GET /admin/stripe/onboard/refresh` → `App\Http\Controllers\admin\StripeConnectController::refresh`
+   - creates a fresh Stripe account link and redirects again if onboarding was not completed
+
+3. `GET /admin/stripe/onboard/return` → `App\Http\Controllers\admin\StripeConnectController::handleReturn`
+   - retrieves the Stripe account via `App\Services\StripeService::retrieveAccount($admin->stripe_account_id)`
+   - updates admin fields: `stripe_details_submitted`, `stripe_charges_enabled`, `stripe_payouts_enabled`, `stripe_onboarded_at`
+
+### Payment flow with Stripe Checkout + Connect
+
+1. `POST /booking/initiate` → `App\Http\Controllers\booking\BookingController::initiate`
+   - validates event and seat selection
+   - if the user is a guest, stores `pending_booking` in session and redirects to `/login`
+   - if authenticated, locks seats using `App\Services\SeatBookingService::lockSeats(...)`
+   - redirects to `GET /booking/confirm/{event}`
+
+2. `GET /booking/confirm/{event}` → `App\Http\Controllers\booking\BookingController::showConfirmation`
+   - loads seats locked by the current booker
+   - shows the booking confirmation page with countdown
+
+3. `POST /booking/confirm/{event}` → `App\Http\Controllers\booking\BookingController::confirmBooking`
+   - verifies the event vendor has completed Stripe onboarding via `vendor->isStripeReady()`
+   - calls `App\Services\StripePaymentService::createCheckoutSession($event, $lockedSeats, $booker)`
+   - `StripePaymentService` builds a Stripe Checkout session with:
+     - `payment_method_types: ['card']`
+     - `mode: 'payment'`
+     - `application_fee_amount` for the platform commission
+     - `transfer_data.destination = $event->vendor->stripe_account_id`
+     - metadata for `event_id`, `seat_ids`, `booker_id`, and `booker_type`
+     - `success_url` and `cancel_url`
+   - redirects the user to the Stripe Checkout URL returned by Stripe
+
+### Stripe webhook finalization
+
+1. Stripe posts payment events to `POST /stripe/webhook` → `App\Http\Controllers\StripeWebhookController::handle`
+2. The controller verifies the Stripe signature via `App\Services\StripeService::constructWebhookEvent(...)`
+3. On `checkout.session.completed` with `payment_status=paid`:
+   - reads metadata from the checkout session
+   - calls `App\Services\SeatBookingService::finalizeStripeBooking(...)`
+   - finalizes the booking in the database and marks the seats as booked
+
+### Data model interplay
+
+- `App\Models\Admin` stores Stripe Connect fields: `stripe_account_id`, `stripe_details_submitted`, `stripe_charges_enabled`, `stripe_payouts_enabled`, `stripe_onboarded_at`
+- `App\Models\Event` belongs to `Admin` via `admin_id` and uses `vendor->stripe_account_id` for payments
+- `StripeService` is the Stripe API wrapper
+- `StripePaymentService` composes checkout session payloads and platform fee + transfer data
+- `StripeWebhookController` ensures Stripe payment completion triggers final booking logic
+
 ## Event date validation
 
 Admins/vendors cannot create events in the past. Defense is layered at three levels:
