@@ -25,7 +25,9 @@ class AdminTwoFactorController extends Controller
 
         $company = config('app.name', 'App');
         $otpAuthUrl = $google2fa->getQRCodeUrl($company, $admin->email, $secret);
-        $qrImageUrl = 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . urlencode($otpAuthUrl);
+
+        // Use qrserver.com as a stable public QR generator (fallback to avoid Google Chart 404s)
+        $qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($otpAuthUrl);
 
         return view('admin.mfa.setup')->with([
             'enabled' => false,

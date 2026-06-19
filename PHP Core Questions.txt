@@ -1,0 +1,2086 @@
+PHP Core Answers with Examples
+
+1. What is the difference between include, include_once, require, and require_once?
+Answer: include gives warning if file is missing, but script continues. require gives fatal error and stops script. _once prevents loading the same file multiple times.
+Example:
+
+require_once 'config.php';
+include 'header.php';
+
+2. What is the difference between == and === in PHP?
+Answer: == compares only value. === compares value and data type both.
+Example:
+
+'5' == 5;   // true
+'5' === 5;  // false
+
+3. What are PHP data types?
+Answer: PHP data types include string, integer, float, boolean, array, object, null, and resource.
+Example:
+
+$name = "Amit";     // string
+$age = 25;          // integer
+$isActive = true;   // boolean
+
+4. What is the difference between isset(), empty(), and is_null()?
+Answer: isset() checks variable exists and is not null. empty() checks if value is empty. is_null() checks only null value.
+Example:
+
+$name = "";
+empty($name);   // true
+isset($name);   // true
+is_null($name); // false
+
+5. What are superglobals in PHP?
+Answer: Superglobals are built-in PHP arrays available everywhere in the script. Examples are $_GET, $_POST, $_SESSION, $_SERVER, $_FILES.
+Example:
+
+echo $_POST['email'];
+
+6. What is the difference between $_GET, $_POST, $_REQUEST, and $_SESSION?
+Answer: $_GET receives data from URL. $_POST receives form body data. $_REQUEST can contain GET/POST/Cookie data, and $_SESSION stores server-side user data.
+Example:
+
+$_SESSION['user_id'] = 10;
+echo $_GET['id'];
+
+7. What is a PHP session, and how does it work?
+Answer: Session stores user data on server. Browser stores only session ID, which helps server identify the user.
+Example:
+
+session_start();
+$_SESSION['user_name'] = 'Amit';
+
+8. What is the difference between cookies and sessions?
+Answer: Cookies are stored in browser. Sessions are stored on server, so they are better for sensitive data.
+Example:
+
+setcookie('theme', 'dark', time() + 3600);
+
+9. What is object-oriented programming in PHP?
+Answer: OOP is a way to organize code using classes and objects. It improves reusability, structure, and maintainability.
+Example:
+
+class User {
+    public $name = "Amit";
+}
+$user = new User();
+
+10. What are class, object, property, and method in PHP?
+Answer: Class is a blueprint, object is an instance of class. Property is variable inside class, and method is function inside class.
+Example:
+
+class User {
+    public $name;
+    public function login() {
+        return "Logged in";
+    }
+}
+
+11. What is the difference between public, private, and protected?
+Answer: public can be accessed anywhere. private only inside same class. protected inside same class and child class.
+Example:
+
+class User {
+    public $name;
+    private $password;
+    protected $role;
+}
+
+12. What is inheritance in PHP?
+Answer: Inheritance allows child class to use properties and methods of parent class. It uses extends keyword.
+Example:
+
+class Animal {
+    public function eat() {}
+}
+class Dog extends Animal {}
+
+13. What is method overriding in PHP?
+Answer: Method overriding means child class defines the same method as parent class. It changes parent method behavior.
+Example:
+
+class ParentClass {
+    public function show() {
+        return "Parent";
+    }
+}
+class ChildClass extends ParentClass {
+    public function show() {
+        return "Child";
+    }
+}
+
+14. What is the difference between abstract class and interface?
+Answer: Abstract class can have abstract and normal methods. Interface only defines method structure that class must implement.
+Example:
+
+interface Payment {
+    public function pay();
+}
+
+class Razorpay implements Payment {
+    public function pay() {
+        return "Paid";
+    }
+}
+
+15. What are traits in PHP?
+Answer: Traits are used to reuse methods in multiple classes. They help when multiple inheritance is not possible.
+Example:
+
+trait Loggable {
+    public function log() {
+        return "Logged";
+    }
+}
+
+class User {
+    use Loggable;
+}
+
+16. What is dependency injection in PHP?
+Answer: Dependency injection means passing required class object from outside instead of creating it inside. It makes code loosely coupled and testable.
+Example:
+
+class UserController {
+    public function __construct(UserService $service) {}
+}
+
+17. What are namespaces in PHP?
+Answer: Namespaces organize classes and avoid class name conflicts. They are very useful in frameworks and large projects.
+Example:
+
+namespace App\Models;
+
+class User {}
+
+18. What is Composer in PHP?
+Answer: Composer is a PHP dependency manager. It installs packages and handles autoloading.
+Example:
+
+composer require laravel/sanctum
+
+19. What is autoloading in PHP?
+Answer: Autoloading automatically loads class files when class is used. Composer provides autoloading in modern PHP projects.
+Example:
+
+require 'vendor/autoload.php';
+
+20. What is the difference between array_merge() and array union operator +?
+Answer: array_merge() merges arrays and reindexes numeric keys. + keeps values from the first array if same key exists.
+Example:
+
+$a = ['x' => 1];
+$b = ['x' => 2];
+
+print_r(array_merge($a, $b)); // x = 2
+print_r($a + $b);             // x = 1
+
+21. How do you handle errors and exceptions in PHP?
+Answer: Exceptions are handled using try, catch, and throw. Errors should be logged and user-friendly messages should be shown.
+Example:
+
+try {
+    throw new Exception("Something went wrong");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+22. What is the difference between throw, try, and catch?
+Answer: try contains risky code. throw creates an exception. catch handles the exception.
+Example:
+
+try {
+    throw new Exception("Error");
+} catch (Exception $e) {
+    echo "Handled";
+}
+
+23. What are magic methods in PHP?
+Answer: Magic methods are special methods starting with double underscore __. Examples are __construct, __get, __set, __toString.
+Example:
+
+class User {
+    public function __construct() {
+        echo "Object created";
+    }
+}
+
+24. What is the use of __construct() and __destruct()?
+Answer: __construct() runs automatically when object is created. __destruct() runs when object is destroyed.
+Example:
+
+class User {
+    public function __construct() {
+        echo "Start";
+    }
+
+    public function __destruct() {
+        echo "End";
+    }
+}
+
+25. How do you prevent SQL injection in PHP?
+Answer: Use prepared statements or parameter binding. Never directly add user input inside SQL query.
+Example:
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->execute([$email]);
+Laravel Theoretical Answers with Examples
+
+26. What is Laravel?
+Answer: Laravel is a PHP framework used to build web applications and APIs. It follows MVC and gives built-in features like routing, validation, ORM, auth, queues, and cache.
+Example: Laravel is commonly used for admin panels, ecommerce, CRM, and REST APIs.
+
+27. What is MVC architecture in Laravel?
+Answer: MVC means Model, View, Controller. It separates database logic, UI, and request handling.
+Example: User model handles users table, Blade view shows user list, Controller handles request.
+
+28. What is the role of Model, View, and Controller?
+Answer: Model communicates with database. View displays frontend. Controller handles request and connects model with view.
+Example:
+
+$users = User::all();
+return view('users.index', compact('users'));
+
+29. What is routing in Laravel?
+Answer: Routing maps URL to controller method or closure. It defines what should happen when user visits a URL.
+Example:
+
+Route::get('/users', [UserController::class, 'index']);
+
+30. What is the difference between web.php and api.php routes?
+Answer: web.php is used for web pages with sessions and CSRF. api.php is used for APIs and usually returns JSON.
+Example: Login page route goes in web.php, mobile API route goes in api.php.
+
+31. What is middleware in Laravel?
+Answer: Middleware filters requests before they reach controller. It is used for auth, role check, CSRF, logging, etc.
+Example:
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth');
+
+32. What is the use of service providers in Laravel?
+Answer: Service providers bootstrap and register application services. They are used to bind classes, register events, routes, or package services.
+Example: AppServiceProvider is loaded when Laravel application starts.
+
+33. What is the use of .env file in Laravel?
+Answer: .env stores environment-specific settings like database, mail, app key, cache, and queue driver.
+Example:
+
+DB_DATABASE=my_project
+DB_USERNAME=root
+DB_PASSWORD=
+
+34. What is Laravel Artisan?
+Answer: Artisan is Laravel’s command-line tool. It helps create files, run migrations, clear cache, run queue, etc.
+Example:
+
+php artisan make:controller UserController
+
+35. What is Composer’s role in Laravel?
+Answer: Composer manages Laravel dependencies and packages. It also handles class autoloading.
+Example:
+
+composer install
+composer require maatwebsite/excel
+
+36. What is the Laravel request lifecycle?
+Answer: Request enters public/index.php, then goes through kernel, middleware, route, controller, and response is returned.
+Example: Browser hits /users, Laravel finds route, controller returns view or JSON.
+
+37. What is CSRF protection in Laravel?
+Answer: CSRF protection prevents fake form submissions from other websites. Laravel checks CSRF token for web forms.
+Example:
+
+<form method="POST">
+    @csrf
+</form>
+
+38. What is the difference between authentication and authorization?
+Answer: Authentication checks who the user is. Authorization checks what the user can access or perform.
+Example: Login is authentication. Checking admin permission is authorization.
+
+39. What are guards in Laravel?
+Answer: Guards define how users are authenticated. Laravel can use session guard for web and token guard for API.
+Example: web guard for browser login, sanctum for API token.
+
+40. What are policies and gates in Laravel?
+Answer: Gates are simple authorization checks. Policies organize authorization logic for models.
+Example: Only post owner can update a post.
+
+41. What is the difference between session-based and token-based authentication?
+Answer: Session-based auth stores login state on server. Token-based auth sends token with each request, mostly used in APIs.
+Example: Website login uses session, mobile app uses API token.
+
+42. What is Laravel Sanctum?
+Answer: Sanctum is used for simple API token authentication and SPA authentication. It is lighter than Passport.
+Example: Mobile app login returns Sanctum token.
+
+43. What is Laravel Passport?
+Answer: Passport provides OAuth2 authentication for APIs. It is useful for advanced authentication and third-party clients.
+Example: Allow external app to access your API using OAuth token.
+
+44. What is the difference between Sanctum and Passport?
+Answer: Sanctum is simple and good for SPA/mobile/simple APIs. Passport is OAuth2-based and better for complex API authentication.
+Example: Use Sanctum for normal mobile API, Passport for third-party OAuth system.
+
+45. What are facades in Laravel?
+Answer: Facades provide static-like access to Laravel services. They make code easy to read.
+Example:
+
+Cache::put('name', 'Amit');
+Log::info('User logged in');
+
+46. What is the difference between facade and dependency injection?
+Answer: Facade is simple static-style access. Dependency injection passes actual object and is better for testing and loose coupling.
+Example:
+
+public function __construct(UserService $userService) {}
+
+47. What is the service container in Laravel?
+Answer: Service container manages class dependencies and resolves objects automatically. It is the core of Laravel dependency injection.
+Example: Laravel automatically injects Request $request into controller method.
+
+48. What is the difference between config(), env(), and config:cache?
+Answer: env() reads values from .env, usually inside config files. config() reads config values. config:cache caches config for performance.
+Example:
+
+config('app.name');
+
+49. What are Laravel events and listeners?
+Answer: Event means something happened. Listener handles that event. This keeps code clean and separated.
+Example: UserRegistered event can trigger SendWelcomeEmail listener.
+
+50. What are jobs and queues?
+Answer: Jobs are tasks, and queues run them in background. They improve speed for heavy operations like emails and reports.
+Example: Send order invoice email using queue.
+
+Laravel Technical Answers with Examples
+
+51. How do you create a controller in Laravel?
+Answer: Use Artisan command to create controller. Then define methods and connect them with routes.
+Example:
+
+php artisan make:controller UserController
+
+52. How do you create a model and migration in Laravel?
+Answer: Use Artisan command with -m flag. It creates model and migration together.
+Example:
+
+php artisan make:model Product -m
+
+53. How do you define routes in Laravel?
+Answer: Routes are defined using Route::get, post, put, delete, etc. They connect URL with controller method.
+Example:
+
+Route::get('/products', [ProductController::class, 'index']);
+Route::post('/products', [ProductController::class, 'store']);
+
+54. How do you pass data from controller to view?
+Answer: Use view() with compact() or with(). The view can directly access that variable.
+Example:
+
+$users = User::all();
+return view('users.index', compact('users'));
+
+55. How do you validate form data in Laravel?
+Answer: Use $request->validate() in controller or Form Request class. Laravel automatically returns validation errors.
+Example:
+
+$request->validate([
+    'name' => 'required',
+    'email' => 'required|email'
+]);
+
+56. Difference between $request->all(), $request->input(), and $request->only()
+Answer: all() gets all request data. input() gets specific value. only() gets selected fields only.
+Example:
+
+$request->all();
+$request->input('email');
+$request->only(['name', 'email']);
+
+57. How do you create custom validation rules in Laravel?
+Answer: Create rule using Artisan and write custom validation logic inside it. Use it in validation rules.
+Example:
+
+php artisan make:rule ValidMobileNumber
+
+58. How do you display validation errors in Blade?
+Answer: Use @error directive or $errors variable. It shows validation message for a field.
+Example:
+
+@error('email')
+    <span>{{ $message }}</span>
+@enderror
+
+59. What is Blade template engine?
+Answer: Blade is Laravel’s templating engine. It supports layouts, conditions, loops, includes, and reusable components.
+Example:
+
+@if($user)
+    Hello {{ $user->name }}
+@endif
+
+60. Difference between @include, @yield, @section, and @extends
+Answer: @extends uses layout, @section defines content, @yield displays section, and @include includes another file.
+Example:
+
+@extends('layouts.app')
+
+@section('content')
+    <h1>Dashboard</h1>
+@endsection
+
+61. How do you use loops and conditions in Blade?
+Answer: Blade provides directives like @if, @else, @foreach, @for, and @forelse.
+Example:
+
+@foreach($users as $user)
+    {{ $user->name }}
+@endforeach
+
+62. What is Eloquent ORM?
+Answer: Eloquent is Laravel’s ORM that maps database tables to models. It allows database operations using PHP classes.
+Example:
+
+$users = User::all();
+
+63. What is the difference between Eloquent and Query Builder?
+Answer: Eloquent works with models and relationships. Query Builder works directly with database tables and is lightweight.
+Example:
+
+User::where('status', 1)->get();        // Eloquent
+DB::table('users')->where('status', 1)->get(); // Query Builder
+
+64. What are Laravel relationships?
+Answer: Relationships connect models with each other. Examples are one-to-one, one-to-many, and many-to-many.
+Example: User has many posts.
+
+65. Difference between hasOne, hasMany, belongsTo, and belongsToMany
+Answer: hasOne means one related record. hasMany means multiple records. belongsTo means current model has foreign key. belongsToMany means many-to-many relation.
+Example: User hasMany Posts, Post belongsTo User.
+
+66. How do you define one-to-many relationship?
+Answer: Use hasMany() in parent model and belongsTo() in child model.
+Example:
+
+// User model
+public function posts() {
+    return $this->hasMany(Post::class);
+}
+
+// Post model
+public function user() {
+    return $this->belongsTo(User::class);
+}
+
+67. How do you define many-to-many relationship?
+Answer: Use belongsToMany() in both models and create pivot table.
+Example:
+
+// User model
+public function roles() {
+    return $this->belongsToMany(Role::class);
+}
+
+68. What is eager loading in Laravel?
+Answer: Eager loading loads related data in advance. It reduces database queries and solves N+1 problem.
+Example:
+
+$users = User::with('posts')->get();
+
+69. What is lazy loading in Laravel?
+Answer: Lazy loading loads related data only when relation is accessed. It can create extra queries inside loops.
+Example:
+
+$user = User::find(1);
+$user->posts; // relation loads here
+
+70. What is the N+1 query problem?
+Answer: N+1 happens when one query gets records and then extra query runs for each record’s relation. It slows down application.
+Example: Looping users and calling $user->posts without eager loading.
+
+71. How do you solve the N+1 query problem?
+Answer: Use eager loading with with(). It loads related records in fewer queries.
+Example:
+
+$users = User::with('posts')->get();
+
+72. What is mass assignment in Laravel?
+Answer: Mass assignment means creating or updating multiple fields at once using array data. It needs protection using $fillable or $guarded.
+Example:
+
+User::create($request->only(['name', 'email']));
+
+73. Difference between $fillable and $guarded
+Answer: $fillable defines allowed fields for mass assignment. $guarded defines blocked fields.
+Example:
+
+protected $fillable = ['name', 'email'];
+
+74. What are accessors and mutators?
+Answer: Accessor modifies value when reading from model. Mutator modifies value before saving into database.
+Example:
+
+public function setNameAttribute($value) {
+    $this->attributes['name'] = ucfirst($value);
+}
+
+75. What are model observers?
+Answer: Observers handle model events like created, updated, deleted. They keep model event logic separate.
+Example: Send notification when order is created.
+
+76. What are migrations in Laravel?
+Answer: Migrations are version control for database structure. They create or modify tables using PHP code.
+Example:
+
+php artisan make:migration create_products_table
+php artisan migrate
+
+77. What are seeders in Laravel?
+Answer: Seeders insert default or testing data into database. They are useful for roles, admin user, test data, etc.
+Example:
+
+php artisan make:seeder UserSeeder
+php artisan db:seed
+
+78. What are factories in Laravel?
+Answer: Factories generate fake model data for testing and seeding. They are useful during development.
+Example:
+
+User::factory()->count(10)->create();
+
+79. How do you rollback a migration?
+Answer: Use migrate:rollback to reverse the last migration batch.
+Example:
+
+php artisan migrate:rollback
+
+80. Difference between migrate, migrate:fresh, and migrate:refresh
+Answer: migrate runs pending migrations. fresh drops all tables and migrates again. refresh rolls back and re-runs migrations.
+Example:
+
+php artisan migrate:fresh --seed
+
+81. How do you upload files in Laravel?
+Answer: Validate the file, then store it using store() or storeAs(). Store only safe file types.
+Example:
+
+$path = $request->file('image')->store('uploads', 'public');
+
+82. How do you store images in Laravel?
+Answer: Store images in storage/app/public and create storage link to access them publicly.
+Example:
+
+php artisan storage:link
+
+83. How do you send emails in Laravel?
+Answer: Create a Mailable class and send it using Laravel Mail facade. For better performance, queue the email.
+Example:
+
+php artisan make:mail WelcomeMail
+Mail::to($user->email)->send(new WelcomeMail($user));
+
+84. How do you create REST APIs in Laravel?
+Answer: Define API routes in api.php, create controller methods, validate request, and return JSON response.
+Example:
+
+Route::get('/products', [ProductApiController::class, 'index']);
+
+85. How do you return JSON response in Laravel?
+Answer: Use response()->json() to return structured API response.
+Example:
+
+return response()->json([
+    'status' => true,
+    'data' => $users
+]);
+
+86. How do you handle API validation errors in Laravel?
+Answer: Laravel returns validation errors with status 422. For APIs, return JSON error response.
+Example:
+
+$request->validate([
+    'email' => 'required|email'
+]);
+
+87. How do you create API authentication in Laravel?
+Answer: Use Sanctum or Passport for API authentication. User logs in and receives token, then sends token in API requests.
+Example:
+
+$token = $user->createToken('api-token')->plainTextToken;
+
+88. How do you use pagination in Laravel?
+Answer: Use paginate() to limit records per page. It returns pagination data and links.
+Example:
+
+$users = User::paginate(10);
+
+89. Difference between paginate(), simplePaginate(), and get()
+Answer: paginate() gives full pagination with total count. simplePaginate() gives only next/previous. get() returns all matching records without pagination.
+Example:
+
+Product::paginate(10);
+Product::simplePaginate(10);
+Product::get();
+
+90. How do you use Laravel cache?
+Answer: Cache stores frequently used data temporarily. It reduces database queries and improves performance.
+Example:
+
+$categories = Cache::remember('categories', 3600, function () {
+    return Category::all();
+});
+
+91. How do you clear Laravel cache?
+Answer: Use Artisan cache clear commands. Clear cache after config, route, or view changes if needed.
+Example:
+
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+92. How do you use Laravel logs?
+Answer: Laravel logs are used to store errors and debug information. Logs are usually saved in storage/logs/laravel.log.
+Example:
+
+Log::info('User created', ['id' => $user->id]);
+Log::error('Payment failed');
+
+93. How do you handle exceptions in Laravel?
+Answer: Use try-catch for specific errors and Laravel’s exception handling for global errors. Log the error and show proper response.
+Example:
+
+try {
+    $user = User::findOrFail($id);
+} catch (Exception $e) {
+    Log::error($e->getMessage());
+}
+
+94. What is the use of app/Exceptions/Handler.php?
+Answer: In older Laravel versions, Handler.php is used to report and render exceptions. It customizes error logging and error responses.
+Example: Return custom JSON response for API errors.
+
+95. How do you optimize a Laravel application?
+Answer: Use eager loading, cache, queues, database indexes, pagination, config cache, route cache, and optimized queries.
+Example:
+
+php artisan config:cache
+php artisan route:cache
+
+
+AJAX Answers
+
+96. What is AJAX?
+Answer: AJAX means Asynchronous JavaScript and XML. It is used to send or receive data from server without page reload.
+Example: Search box suggestions without refreshing the page.
+
+97. Why do we use AJAX?
+Answer: We use AJAX to improve user experience by updating only part of a page. It is useful for forms, filters, search, status update, and pagination.
+Example: Submit contact form and show success message without reload.
+
+98. Synchronous vs asynchronous requests
+Answer: Synchronous request waits until response comes. Asynchronous request does not block the page and response is handled later.
+Example: AJAX is mostly asynchronous.
+
+99. AJAX vs normal form submission
+Answer: Normal form submission reloads the full page. AJAX sends data in background and updates only required section.
+Example: Login form can show error message without page refresh.
+
+100. Advantages of AJAX
+Answer: AJAX makes pages faster and smoother because only required data is loaded. It reduces server load and improves user experience.
+Example: Filter products by category without reloading full page.
+
+101. Disadvantages of AJAX
+Answer: AJAX needs JavaScript enabled and can be harder to debug. It also needs proper error handling and security protection.
+Example: If AJAX fails, user may not know unless we show error message.
+
+102. What is XMLHttpRequest?
+Answer: XMLHttpRequest is a browser object used to send HTTP requests from JavaScript. Modern code often uses fetch() or jQuery AJAX instead.
+Example: jQuery AJAX internally uses browser request features.
+
+103. GET vs POST in AJAX
+Answer: GET is used to fetch data. POST is used to send or save data securely in request body.
+Example:
+
+$.get('/users');
+$.post('/users', { name: 'John' });
+
+104. Send form data using AJAX
+Answer: Get form values using jQuery and send them using $.ajax(). Server returns success or error response.
+Example:
+
+$.ajax({
+    url: '/save-user',
+    type: 'POST',
+    data: $('#userForm').serialize(),
+    success: function(response) {
+        alert('Saved successfully');
+    }
+});
+
+105. Send JSON data using AJAX
+Answer: Convert object to JSON using JSON.stringify() and set content type as JSON.
+Example:
+
+$.ajax({
+    url: '/api/users',
+    type: 'POST',
+    data: JSON.stringify({ name: 'Amit' }),
+    contentType: 'application/json',
+    success: function(response) {
+        console.log(response);
+    }
+});
+
+106. Handle success and error in AJAX
+Answer: success runs when request completes successfully. error runs when server returns error like 404, 422, or 500.
+Example:
+
+$.ajax({
+    url: '/users',
+    success: function(res) {
+        console.log(res);
+    },
+    error: function(xhr) {
+        console.log(xhr.responseText);
+    }
+});
+
+107. Use of beforeSend
+Answer: beforeSend runs before AJAX request starts. It is used to show loader or disable button.
+Example: Disable submit button before request.
+
+108. Use of complete
+Answer: complete runs after AJAX request finishes, whether success or error. It is used to hide loader or enable button again.
+Example: Enable submit button after request completed.
+
+109. Upload file using AJAX
+Answer: Use FormData to send file through AJAX. Set processData:false and contentType:false.
+Example:
+
+let formData = new FormData($('#uploadForm')[0]);
+
+$.ajax({
+    url: '/upload',
+    type: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function(res) {
+        alert('File uploaded');
+    }
+});
+
+110. What is FormData?
+Answer: FormData is a JavaScript object used to send form fields and files through AJAX. It is mostly used for image/file upload.
+Example:
+
+let data = new FormData();
+data.append('image', $('#image')[0].files[0]);
+
+111. Send CSRF token with AJAX in Laravel
+Answer: Laravel needs CSRF token for POST, PUT, PATCH, DELETE web requests. Add token in AJAX header.
+Example:
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+112. Handle Laravel validation errors in AJAX
+Answer: Laravel returns validation errors with status 422. In AJAX error callback, read xhr.responseJSON.errors.
+Example: Show validation message below input field.
+
+113. Show server-side validation messages using AJAX
+Answer: Clear old errors first, then loop through validation errors and display them near fields.
+Example:
+
+error: function(xhr) {
+    let errors = xhr.responseJSON.errors;
+    $('#nameError').text(errors.name ? errors.name[0] : '');
+}
+
+114. Prevent duplicate AJAX requests
+Answer: Disable submit button while request is running or use a flag variable. This prevents double form submission.
+Example:
+
+$('#btn').prop('disabled', true);
+
+115. AJAX polling vs WebSockets
+Answer: Polling repeatedly sends requests after fixed time. WebSocket keeps live connection for real-time data.
+Example: Chat app is better with WebSocket.
+
+116. Debug AJAX requests
+Answer: Use browser developer tools Network tab. Check request URL, method, payload, response, and status code.
+Example: If 500 error comes, check Laravel log also.
+
+117. HTTP status codes handled in AJAX
+Answer: Common codes are 200, 201, 400, 401, 403, 404, 422, and 500. Each code should show proper message.
+Example: 422 for validation error.
+
+118. Handle 401, 403, 404, 500 errors
+Answer: 401 means unauthenticated, 403 unauthorized, 404 not found, 500 server error. Show user-friendly message.
+Example: Redirect to login on 401.
+
+119. Call Laravel API using AJAX
+Answer: Use API URL, method, headers, and token if authentication is required. Laravel returns JSON response.
+Example:
+
+$.ajax({
+    url: '/api/products',
+    type: 'GET',
+    headers: {
+        Authorization: 'Bearer ' + token
+    },
+    success: function(res) {
+        console.log(res);
+    }
+});
+
+120. Update part of page without reloading
+Answer: Use AJAX response data and update HTML using jQuery. Only required section changes.
+Example:
+
+$('#userList').html(response.html);
+jQuery Answers
+
+121. What is jQuery?
+Answer: jQuery is a JavaScript library used to simplify DOM manipulation, events, AJAX, and animations.
+Example: $('#id').hide();
+
+122. Why do we use jQuery?
+Answer: jQuery makes JavaScript code shorter and easier. It is useful for selectors, events, AJAX, and DOM changes.
+Example: Add class, hide element, send AJAX request easily.
+
+123. JavaScript vs jQuery
+Answer: JavaScript is the core language. jQuery is a library built on JavaScript to write less code.
+Example:
+
+document.getElementById('box');
+$('#box');
+
+124. $(document).ready() vs window.onload
+Answer: document.ready runs when DOM is ready. window.onload runs after all images, CSS, and resources are loaded.
+Example: Form event binding is usually done in document.ready.
+
+125. jQuery selector
+Answer: Selector is used to select HTML elements. It can select by id, class, tag, attribute, etc.
+Example:
+
+$('#name');
+$('.item');
+$('p');
+
+126. ID selector vs class selector
+Answer: ID selector selects one unique element. Class selector selects one or multiple elements with same class.
+Example: #email and .form-control.
+
+127. Event handling in jQuery
+Answer: Event handling means running code when user performs action like click, change, keyup, submit.
+Example:
+
+$('#btn').on('click', function() {
+    alert('Clicked');
+});
+
+128. .click() vs .on('click')
+Answer: .click() is shortcut for click event. .on() is more flexible and supports event delegation.
+Example: Use .on() for dynamic elements.
+
+129. Event delegation
+Answer: Event delegation attaches event to parent element and handles events for child elements. It works for dynamically added elements.
+Example:
+
+$(document).on('click', '.deleteBtn', function() {
+    alert('Delete clicked');
+});
+
+130. Why event delegation is useful?
+Answer: Dynamically added elements do not exist when page loads. Delegation allows them to still trigger events.
+Example: Delete button added after AJAX response.
+
+131. .html(), .text(), .val()
+Answer: .html() gets or sets HTML. .text() gets or sets plain text. .val() gets or sets form input value.
+Example:
+
+$('#name').val();
+$('#msg').text('Hello');
+
+132. .attr() vs .prop()
+Answer: .attr() handles HTML attributes. .prop() handles DOM properties like checked, selected, disabled.
+Example:
+
+$('#check').prop('checked', true);
+
+133. .remove(), .empty(), .detach()
+Answer: .remove() deletes element with events. .empty() clears inner content. .detach() removes element but keeps events/data.
+Example: Remove table row after delete.
+
+134. .hide(), .show(), .toggle()
+Answer: .hide() hides element, .show() displays it, .toggle() switches between hide and show.
+Example: Show password field conditionally.
+
+135. Add/remove CSS classes
+Answer: Use addClass(), removeClass(), and toggleClass().
+Example:
+
+$('#box').addClass('active');
+$('#box').removeClass('active');
+
+136. Get form input values
+Answer: Use .val() to get input value. For selected options, checkbox, radio, use proper selector.
+Example:
+
+let email = $('#email').val();
+
+137. Validate form using jQuery
+Answer: Check input values before submitting form. If invalid, show error and stop submit.
+Example:
+
+if ($('#name').val() == '') {
+    $('#nameError').text('Name is required');
+}
+
+138. Append data to table
+Answer: Use .append() to add new row in table body.
+Example:
+
+$('#userTable tbody').append('<tr><td>Amit</td></tr>');
+
+139. Checkbox and radio values
+Answer: Use :checked selector to get selected checkbox or radio value.
+Example:
+
+let gender = $('input[name="gender"]:checked').val();
+
+140. Disable and enable button
+Answer: Use .prop('disabled', true) to disable and false to enable.
+Example:
+
+$('#submitBtn').prop('disabled', true);
+
+141. Prevent form submission
+Answer: Use event.preventDefault() inside submit event. Useful for AJAX form submission.
+Example:
+
+$('#form').on('submit', function(e) {
+    e.preventDefault();
+});
+
+142. Reset form
+Answer: Use native form reset method. It clears form fields.
+Example:
+
+$('#myForm')[0].reset();
+
+143. jQuery chaining
+Answer: Chaining means applying multiple jQuery methods on same element in one line.
+Example:
+
+$('#box').addClass('active').show().text('Done');
+
+144. jQuery effects
+Answer: Effects are used for animation like hide, show, fade, slide.
+Example:
+
+$('#msg').fadeOut();
+
+145. .find(), .children(), .parent()
+Answer: .find() searches all nested children. .children() gets direct children only. .parent() gets immediate parent.
+Example: Find input inside selected form.
+
+Database and MySQL Answers
+
+146. Primary key vs foreign key
+Answer: Primary key uniquely identifies a row. Foreign key connects one table to another table.
+Example: users.id is primary key, posts.user_id is foreign key.
+
+147. What is indexing?
+Answer: Indexing improves search speed in database tables. It works like an index in a book.
+Example: Add index on email column for faster login lookup.
+
+148. Why use indexes?
+Answer: Indexes make SELECT, WHERE, JOIN, and ORDER BY faster. They are useful on frequently searched columns.
+Example: Index user_id in orders table.
+
+149. Disadvantages of indexes
+Answer: Indexes take extra storage. They can slow down insert, update, and delete operations because index also needs update.
+
+150. Types of joins
+Answer: INNER JOIN returns matching records. LEFT JOIN returns all left table records. RIGHT JOIN returns all right table records.
+Example: Get users with their orders using join.
+
+151. Normalization
+Answer: Normalization means organizing database to reduce duplicate data. It improves data consistency.
+Example: Store user details in users table, orders in orders table.
+
+152. Denormalization
+Answer: Denormalization means adding duplicate data intentionally to improve read performance.
+Example: Store customer_name in orders table for faster reports.
+
+153. WHERE vs HAVING
+Answer: WHERE filters rows before grouping. HAVING filters grouped records after GROUP BY.
+Example:
+
+SELECT user_id, COUNT(*) 
+FROM orders 
+GROUP BY user_id 
+HAVING COUNT(*) > 5;
+
+154. GROUP BY vs ORDER BY
+Answer: GROUP BY groups records. ORDER BY sorts records.
+Example: Group orders by user and sort by total amount.
+
+155. DELETE, TRUNCATE, DROP
+Answer: DELETE removes selected rows. TRUNCATE removes all rows quickly. DROP removes full table structure.
+Example: Use DELETE when condition is needed.
+
+156. Transaction in MySQL
+Answer: Transaction is a group of queries executed as one unit. If one fails, changes can be rolled back.
+Example: Order creation and payment entry should both succeed.
+
+157. ACID properties
+Answer: ACID means Atomicity, Consistency, Isolation, Durability. It ensures safe and reliable database transactions.
+
+158. Transactions in Laravel
+Answer: Use DB::transaction() to run multiple queries safely. If error occurs, Laravel rolls back automatically.
+Example:
+
+DB::transaction(function () {
+    Order::create([...]);
+    Payment::create([...]);
+});
+
+159. Optimize slow queries
+Answer: Add indexes, select only required columns, avoid N+1 queries, use pagination, and check query execution plan.
+Example: Use with() in Laravel instead of running relationship query in loop.
+
+160. Check SQL queries in Laravel
+Answer: Use DB::listen(), Laravel Debugbar, Telescope, or toSql().
+Example:
+
+User::where('email', $email)->toSql();
+Practical Laravel Scenario Answers
+
+161. User registration and login system
+Answer: Use Laravel authentication starter kit or create register/login manually with validation, password hashing, and session login.
+Example: Use Hash::make() while storing password.
+
+162. Role-based access control
+Answer: Create roles table and assign role to users. Use middleware, gates, or policies to restrict access.
+Example: Admin can access dashboard, normal user cannot.
+
+163. CRUD module
+Answer: Create migration, model, controller, routes, Blade files, validation, and database operations.
+Example: Product CRUD has create, list, edit, update, delete.
+
+164. Search filter using Laravel and AJAX
+Answer: Send search keyword through AJAX and return filtered HTML or JSON. Update table without reload.
+Example: Search users by name in admin panel.
+
+165. Dependent dropdowns
+Answer: On parent dropdown change, send AJAX request and load child dropdown data.
+Example: Select country, then load states.
+
+166. AJAX pagination
+Answer: Use Laravel pagination and load next page data using AJAX. Replace table/list section dynamically.
+Example: Product listing pagination without page refresh.
+
+167. Submit form without page reload
+Answer: Prevent default form submit and send form data using AJAX. Show success or validation errors from response.
+Example:
+
+$('#form').on('submit', function(e) {
+    e.preventDefault();
+    $.post('/save', $(this).serialize());
+});
+
+168. Upload image using AJAX in Laravel
+Answer: Use FormData in AJAX and validate/store image in Laravel controller.
+Example: Profile image upload without refresh.
+
+169. Client-side and server-side validation
+Answer: Client-side validation improves UX. Server-side validation is mandatory for security.
+Example: jQuery checks empty field; Laravel validates actual request.
+
+170. Show validation errors below input using AJAX
+Answer: Laravel returns errors with 422. In AJAX error callback, place each message near related field.
+Example: errors.email[0] shown under email input.
+
+171. Delete record using AJAX with confirmation
+Answer: Show confirmation popup first. If confirmed, send DELETE request with CSRF token and remove row from table.
+Example: Delete user from admin list.
+
+172. Update record status using AJAX
+Answer: Send record ID and status through AJAX. Update database and change UI badge/button after success.
+Example: Active/inactive product toggle.
+
+173. Dynamic add-more form using jQuery
+Answer: Append new input row on button click and remove row if needed. Use array field names.
+Example: Add multiple product images or invoice items.
+
+174. Handle large data listing
+Answer: Use pagination, server-side filtering, indexing, and select only required columns. Avoid loading all records.
+Example: Use DataTables server-side processing.
+
+175. Export data to Excel or CSV
+Answer: Use Laravel Excel package or generate CSV manually. Apply filters before export if needed.
+Example: Export monthly orders report.
+
+176. Import bulk data
+Answer: Upload CSV/Excel, validate rows, then insert using chunking or queue.
+Example: Import thousands of products from CSV.
+
+177. Send email after registration
+Answer: Create event/listener or directly send mail after user creation. Queue email for better performance.
+Example: Welcome email after signup.
+
+178. Forgot password functionality
+Answer: Generate password reset token and send reset link to email. User sets new password through secure link.
+Example: Laravel has built-in password reset features.
+
+179. Create API endpoints for mobile app
+Answer: Define routes in api.php, return JSON response, validate request, and use token authentication.
+Example: Login API returns user data and token.
+
+180. Secure Laravel APIs
+Answer: Use token authentication, validation, rate limiting, HTTPS, authorization checks, and proper error responses.
+Example: Protect API routes with Sanctum middleware.
+
+181. Image resizing/compression
+Answer: Use image processing package or service to resize before storing. It saves storage and improves loading speed.
+Example: Compress profile image to 300x300.
+
+182. Public and private storage
+Answer: Public files are accessible through URL. Private files should be served through controller after permission check.
+Example: Product image public, invoice PDF private.
+
+183. Soft delete
+Answer: Soft delete marks record as deleted using deleted_at instead of permanently removing it.
+Example:
+
+use SoftDeletes;
+
+184. Restore soft-deleted records
+Answer: Use withTrashed() and restore() to recover deleted record.
+Example:
+
+User::withTrashed()->find($id)->restore();
+
+185. Maintain activity logs
+Answer: Store user actions like create, update, delete in activity_logs table or use package.
+Example: Log “Admin updated product price.”
+
+Security Answers
+
+186. SQL injection
+Answer: SQL injection happens when attacker inserts malicious SQL through input fields. It can leak, modify, or delete data.
+Example: Direct query with user input is risky.
+
+187. How Laravel prevents SQL injection
+Answer: Laravel Query Builder and Eloquent use parameter binding. It prevents user input from being treated as SQL code.
+Example:
+
+User::where('email', $email)->first();
+
+188. What is XSS?
+Answer: XSS means Cross-Site Scripting. Attacker injects malicious JavaScript into web page.
+Example: Script entered in comment box executes for other users.
+
+189. Prevent XSS in Laravel
+Answer: Use Blade escaping {{ }} instead of raw {!! !!}. Validate and sanitize user input.
+Example:
+
+{{ $comment }}
+
+190. What is CSRF?
+Answer: CSRF means Cross-Site Request Forgery. It tricks logged-in user into submitting unwanted request.
+Example: Fake form submits request to delete account.
+
+191. Laravel CSRF protection
+Answer: Laravel uses CSRF token for web forms. Request fails if token is missing or invalid.
+Example:
+
+@csrf
+
+192. Mass assignment vulnerability
+Answer: It happens when user updates fields that should not be allowed, like is_admin. Use $fillable or $guarded.
+Example: Never allow is_admin in $fillable.
+
+193. Protect routes in Laravel
+Answer: Use middleware like auth, role middleware, gates, or policies.
+Example:
+
+Route::get('/admin', ...)->middleware('auth');
+
+194. Secure file uploads
+Answer: Validate file type, size, extension, and store with generated name. Never trust original filename.
+Example: Allow only jpg, png, pdf.
+
+195. Protect .env sensitive data
+Answer: Never upload .env to public repository. Server should block direct access to .env.
+Example: Add .env in .gitignore.
+
+196. Password hashing
+Answer: Hashing converts password into one-way secure string. Original password cannot be recovered.
+Example:
+
+Hash::make($request->password);
+
+197. Encryption vs hashing
+Answer: Encryption is reversible with key. Hashing is one-way and mainly used for passwords.
+Example: Passwords use hashing, not encryption.
+
+198. Hash passwords in Laravel
+Answer: Use Laravel Hash facade. Laravel also verifies password using Hash::check().
+Example:
+
+Hash::check($password, $user->password);
+
+199. Validate permissions before action
+Answer: Use policies, gates, or role checks before update/delete operations.
+Example: Only post owner can edit post.
+
+200. Handle unauthorized access
+Answer: Return 403 response or redirect user with error message. Use Laravel authorization methods.
+Example:
+
+$this->authorize('update', $post);
+Advanced / Mid-Level Laravel Answers
+
+201. Repository pattern
+Answer: Repository pattern separates database logic from controller. It makes code cleaner and easier to test.
+Example: Controller calls UserRepository->getActiveUsers().
+
+202. Service classes
+Answer: Service classes contain business logic. They keep controllers small and reusable.
+Example: Payment calculation logic in PaymentService.
+
+203. Why not write business logic in controllers?
+Answer: Controllers should handle request and response only. Business logic in services keeps code clean, reusable, and testable.
+
+204. Dependency injection in Laravel
+Answer: Laravel automatically injects class dependencies through constructor or method. It uses service container.
+Example:
+
+public function __construct(UserService $userService) {}
+
+205. Route model binding
+Answer: Route model binding automatically fetches model based on route parameter. It reduces manual find() code.
+Example:
+
+Route::get('/users/{user}', function(User $user) {});
+
+206. Implicit route model binding
+Answer: Laravel automatically resolves model when route parameter name matches variable name.
+Example: {user} becomes User $user.
+
+207. Explicit route model binding
+Answer: Explicit binding manually defines how route parameter resolves model. Useful for custom logic.
+Example: Bind user by username instead of id.
+
+208. API resources
+Answer: API resources transform models into structured JSON response. They hide unwanted fields and format data.
+Example:
+
+return new UserResource($user);
+
+209. Resource controller vs normal controller
+Answer: Resource controller contains standard CRUD methods like index, store, show, update, destroy. Normal controller can have any custom methods.
+Example: ProductController as resource controller.
+
+210. Laravel collections
+Answer: Collections are powerful wrappers around arrays. They provide methods like map, filter, pluck, each.
+Example:
+
+$users->pluck('email');
+
+211. Collection methods vs array functions
+Answer: Collection methods are object-oriented and chainable. Array functions are native PHP functions.
+Example:
+
+$users->filter()->map();
+
+212. map(), filter(), pluck(), each()
+Answer: map() transforms data. filter() removes unwanted data. pluck() gets specific column. each() loops data.
+Example: Get all user emails using pluck('email').
+
+213. Task scheduling
+Answer: Laravel scheduler runs commands automatically at defined times. It replaces multiple cron jobs with one scheduler.
+Example: Send daily report at midnight.
+
+214. Queues
+Answer: Queues process tasks in background. They improve response speed for heavy tasks.
+Example: Send email after order placed.
+
+215. Why use queues?
+Answer: Queues prevent users from waiting for slow tasks. They are useful for emails, notifications, imports, and reports.
+
+216. Process emails in queue
+Answer: Make mail class implement queue or dispatch a job. Run queue worker to process background emails.
+Example:
+
+Mail::to($user)->queue(new WelcomeMail());
+
+217. Laravel Horizon
+Answer: Horizon is a dashboard for monitoring Redis queues in Laravel. It shows jobs, failed jobs, runtime, and throughput.
+
+218. Caching
+Answer: Caching stores frequently used data temporarily. It reduces repeated database queries and improves speed.
+Example: Cache homepage categories.
+
+219. Redis
+Answer: Redis is an in-memory data store. Laravel uses it for cache, queues, sessions, and real-time features.
+
+220. Redis with Laravel
+Answer: Redis can be used as cache or queue driver. It is faster than database-based queue/cache.
+Example: Set CACHE_STORE=redis.
+
+221. Cache vs session
+Answer: Cache stores temporary application data. Session stores user-specific data like login state or cart data.
+
+222. Events vs jobs
+Answer: Event says something happened. Job performs a task, often in background.
+Example: UserRegistered event can dispatch SendWelcomeEmail job.
+
+223. Observers vs events
+Answer: Observers listen to model events like created, updated, deleted. Events are more general and can be triggered manually.
+
+224. Background tasks
+Answer: Use jobs and queues for background tasks. Run queue worker using supervisor on server.
+Example: Generate PDF invoice in background.
+
+225. Improve Laravel performance
+Answer: Use eager loading, caching, queues, indexes, route/config cache, pagination, and optimized queries.
+Example: Replace N+1 query with with().
+
+Debugging and Experience-Based Answers
+
+226. Common Laravel errors
+Answer: Common errors are route not found, class not found, migration error, permission issue, 500 error, CSRF token mismatch.
+Example: 500 error often comes due to .env or permission issue.
+
+227. Debug Laravel errors
+Answer: Check error message, Laravel logs, browser Network tab, and database queries. Use dd() only in local environment.
+Example: Check storage/logs/laravel.log.
+
+228. Use Laravel logs
+Answer: Logs are used to record errors and debug information. Use Log::info() or Log::error().
+Example:
+
+Log::info('User created', ['id' => $user->id]);
+
+229. Debug database queries
+Answer: Use Laravel Debugbar, Telescope, DB::listen(), or toSql(). Also check slow query and indexes.
+Example: Check if query runs inside loop.
+
+230. Use of dd() and dump()
+Answer: dd() means dump and die, it prints data and stops execution. dump() prints data but execution continues.
+
+231. dd(), dump(), Log::info()
+Answer: dd() stops execution. dump() continues execution. Log::info() stores debug data in log file.
+
+232. Handle 500 internal server error
+Answer: Check Laravel logs, .env, file permissions, missing class, syntax error, and database connection.
+Example: On production, turn off debug and check logs.
+
+233. Route not found error
+Answer: Check route name, URL, method GET/POST, route cache, and controller namespace.
+Example: Run php artisan route:list.
+
+234. Class not found error
+Answer: Check namespace, import statement, class name spelling, and Composer autoload.
+Example: Run composer dump-autoload.
+
+235. Debug AJAX errors
+Answer: Check browser Network tab for URL, method, payload, CSRF token, response, and status code.
+Example: 419 usually means CSRF token issue.
+
+236. Check AJAX request/response in dev tools
+Answer: Open browser DevTools, go to Network tab, click request, check Headers, Payload, Preview, and Response.
+Example: Check validation error JSON under Response tab.
+
+237. Projects worked on in Laravel
+Answer: Explain real modules you worked on like CRM, ecommerce, admin panel, API, reports, payment, user management.
+Example: “I worked on product CRUD, order management, AJAX filters, and API integration.”
+
+238. Role in last Laravel project
+Answer: Mention your actual responsibilities clearly. Include modules, bug fixing, APIs, database, frontend AJAX, and deployment support.
+Example: “I handled backend APIs, Blade forms, AJAX validation, and MySQL queries.”
+
+239. Modules developed independently
+Answer: Mention complete modules where you handled route, controller, model, view, validation, and database.
+Example: User management, product management, reports, role permission, invoice module.
+
+240. Most difficult bug solved
+Answer: Choose one real example and explain issue, investigation, and solution. Keep it practical.
+Example: “I fixed N+1 query issue in reports by using eager loading and indexes.”
+
+241. Manage code conflicts in Git
+Answer: Pull latest code, check conflict files, keep correct changes, test code, then commit resolved files.
+Example: Conflict usually happens when two developers edit same file.
+
+242. Git commands used regularly
+Answer: Common commands are git clone, pull, status, add, commit, push, checkout, branch, merge.
+Example:
+
+git status
+git add .
+git commit -m "fix login issue"
+git push
+
+243. git pull, git fetch, git merge
+Answer: fetch downloads changes but does not merge. merge combines branch changes. pull does fetch plus merge.
+Example: git pull updates local branch directly.
+
+244. Deploy Laravel project
+Answer: Upload code, set .env, install Composer dependencies, generate app key, migrate database, set permissions, and configure web server.
+Example: Point domain to Laravel public folder.
+
+245. Steps after uploading Laravel code to server
+Answer: Run composer install, set .env, database, storage permission, storage link, migrate, cache config/routes, and test application.
+Example:
+
+composer install --no-dev
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+php artisan config:cache
+
+
+
+RESTful API Interview Questions with Short Answers
+
+1. What is REST API?
+Answer: REST API is an architectural style used to communicate between client and server using HTTP methods. It usually returns data in JSON format.
+Example: Mobile app calls Laravel API to get product list.
+
+2. What does REST stand for?
+Answer: REST means Representational State Transfer. It uses resources like users, products, orders and performs actions using HTTP methods.
+
+3. What is a resource in REST API?
+Answer: Resource is any data object exposed through API. Example: users, products, categories, orders.
+Example:
+
+GET /api/products
+
+4. What are common HTTP methods in REST API?
+Answer: GET fetches data, POST creates data, PUT/PATCH updates data, and DELETE removes data.
+Example:
+
+GET /api/users
+POST /api/users
+PUT /api/users/1
+DELETE /api/users/1
+
+5. Difference between PUT and PATCH?
+Answer: PUT updates the full resource. PATCH updates only selected fields.
+Example:
+
+PUT /api/users/1     // update full user
+PATCH /api/users/1   // update only status
+
+6. What is JSON response?
+Answer: JSON response is structured data returned by API. It is easy for frontend/mobile apps to read.
+Example:
+
+{
+  "status": true,
+  "message": "User fetched successfully",
+  "data": {
+    "id": 1,
+    "name": "Amit"
+  }
+}
+
+7. What is API endpoint?
+Answer: API endpoint is a URL where client sends request to access a resource.
+Example:
+
+/api/login
+/api/products
+/api/orders/10
+
+8. What is stateless API?
+Answer: Stateless means every API request must contain all required information. Server does not depend on previous request session.
+Example: Token is sent with every protected API request.
+
+9. What is API authentication?
+Answer: API authentication checks whether the request user is valid or not. Usually done using tokens.
+Example:
+
+Authorization: Bearer token_here
+
+10. What is Bearer token?
+Answer: Bearer token is an access token sent in request header. Server verifies it before allowing protected API access.
+
+11. How do you create API authentication in Laravel?
+Answer: Use Laravel Sanctum or Passport. User logs in, server returns token, client sends token in Authorization header.
+Example:
+
+$token = $user->createToken('api-token')->plainTextToken;
+
+12. What is Laravel Sanctum?
+Answer: Sanctum is used for simple API token authentication and SPA authentication. It is good for mobile apps and simple REST APIs.
+
+13. What is Laravel Passport?
+Answer: Passport provides OAuth2 authentication. It is used for complex API authentication or third-party API access.
+
+14. Sanctum vs Passport?
+Answer: Sanctum is simple and lightweight. Passport is OAuth2 based and used for advanced authentication requirements.
+
+15. What is API versioning?
+Answer: API versioning manages changes without breaking old clients.
+Example:
+
+/api/v1/products
+/api/v2/products
+
+16. Why do we use API versioning?
+Answer: To support old mobile apps or frontend while adding new API changes. It prevents breaking existing users.
+
+17. What are HTTP status codes in API?
+Answer: Status codes tell request result. Example: 200 success, 201 created, 401 unauthenticated, 404 not found, 422 validation error, 500 server error.
+
+18. Difference between 401 and 403?
+Answer: 401 means user is not authenticated. 403 means user is authenticated but not allowed.
+Example: Logged-out user gets 401; normal user accessing admin API gets 403.
+
+19. What is 422 Unprocessable Entity?
+Answer: 422 is commonly used for validation errors. Request format is correct but data is invalid.
+Example: Email field is missing during registration.
+
+20. What is API validation?
+Answer: API validation checks incoming request data before processing. It protects database and business logic.
+Example:
+
+$request->validate([
+    'email' => 'required|email',
+    'password' => 'required|min:6'
+]);
+
+21. How do you return validation errors in Laravel API?
+Answer: Laravel automatically returns validation errors as JSON for API requests, usually with status 422.
+Example:
+
+{
+  "message": "The email field is required.",
+  "errors": {
+    "email": ["The email field is required."]
+  }
+}
+
+22. What is API Resource in Laravel?
+Answer: API Resource transforms model data before returning JSON. It helps hide fields and format response.
+Example:
+
+return new UserResource($user);
+
+23. Why use API Resource?
+Answer: To control API response structure. It avoids exposing unnecessary database fields like password or internal columns.
+
+24. What is pagination in API?
+Answer: Pagination returns limited records per request. It improves performance for large data.
+Example:
+
+return Product::paginate(10);
+
+25. How do you handle search and filters in API?
+Answer: Use request query parameters and apply conditions in query.
+Example:
+
+Product::when($request->search, function ($q) use ($request) {
+    $q->where('name', 'like', '%' . $request->search . '%');
+})->paginate(10);
+
+26. What is rate limiting?
+Answer: Rate limiting restricts number of requests from a user/IP in a time period. It prevents abuse and brute force attacks.
+
+27. How does Laravel handle API rate limiting?
+Answer: Laravel provides throttle middleware to limit API requests.
+Example:
+
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
+});
+
+28. What is CORS?
+Answer: CORS allows or blocks requests from different domains. It is important when frontend and backend are on different domains.
+
+29. What is API middleware?
+Answer: Middleware checks API request before controller. Used for auth, rate limit, role check, logging, etc.
+Example:
+
+Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'profile']);
+
+30. What is idempotency in REST API?
+Answer: Idempotency means calling same request multiple times gives same result. GET, PUT, and DELETE are usually idempotent; POST is usually not.
+
+31. Difference between query params and route params?
+Answer: Route params identify specific resource. Query params are used for filters, search, sorting, pagination.
+Example:
+
+/api/users/10
+/api/users?status=active&search=amit
+
+32. What is request payload?
+Answer: Payload is data sent in request body, mostly in POST, PUT, or PATCH requests.
+Example:
+
+{
+  "name": "Amit",
+  "email": "amit@example.com"
+}
+
+33. How do you secure REST APIs?
+Answer: Use HTTPS, token authentication, validation, authorization, rate limiting, CORS configuration, and proper error handling.
+
+34. What is API response structure you follow?
+Answer: Keep response consistent with status, message, data, and errors.
+Example:
+
+{
+  "status": true,
+  "message": "Product created successfully",
+  "data": {}
+}
+
+35. How do you handle API exceptions?
+Answer: Use try-catch for expected errors and global exception handler for common API responses. Log actual error internally.
+
+36. What is the difference between REST API and SOAP API?
+Answer: REST is lightweight and commonly uses JSON. SOAP is XML-based and more strict/heavy.
+
+37. What is the difference between REST API and GraphQL?
+Answer: REST has multiple endpoints. GraphQL usually has one endpoint where client asks only required fields.
+
+38. What is API documentation?
+Answer: API documentation explains endpoints, methods, parameters, headers, request body, and response format.
+Example: Swagger/Postman documentation.
+
+39. How do you test APIs?
+Answer: Use Postman, Insomnia, Laravel feature tests, or curl. Check request body, headers, token, and response status.
+
+40. What is Postman used for?
+Answer: Postman is used to test APIs, save requests, manage environment variables, and create API documentation.
+
+41. How do you upload file using API in Laravel?
+Answer: Send file as multipart/form-data, validate it in Laravel, then store it.
+Example:
+
+$request->validate([
+    'image' => 'required|image|mimes:jpg,png|max:2048'
+]);
+
+$path = $request->file('image')->store('products', 'public');
+
+42. How do you create login API in Laravel?
+Answer: Validate email/password, check credentials, create token, and return user with token.
+Example:
+
+if (!Auth::attempt($request->only('email', 'password'))) {
+    return response()->json(['message' => 'Invalid credentials'], 401);
+}
+
+$token = auth()->user()->createToken('api-token')->plainTextToken;
+
+43. How do you create logout API?
+Answer: Delete current access token. After that token cannot access protected routes.
+Example:
+
+$request->user()->currentAccessToken()->delete();
+
+return response()->json(['message' => 'Logged out']);
+
+44. How do you protect API routes in Laravel?
+Answer: Use authentication middleware like auth:sanctum. Only valid token users can access protected routes.
+Example:
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [UserController::class, 'profile']);
+});
+
+45. What is resource controller for API?
+Answer: Resource controller provides standard methods like index, store, show, update, destroy.
+Example:
+
+php artisan make:controller Api/ProductController --api
+
+46. What is apiResource route?
+Answer: apiResource creates REST API routes except create/edit because APIs do not need form pages.
+Example:
+
+Route::apiResource('products', ProductController::class);
+
+47. How do you return custom error response?
+Answer: Use response()->json() with proper status code.
+Example:
+
+return response()->json([
+    'status' => false,
+    'message' => 'Product not found'
+], 404);
+
+48. How do you handle not found model in API?
+Answer: Use find() and return custom 404, or use findOrFail() with exception handling.
+Example:
+
+$product = Product::find($id);
+
+if (!$product) {
+    return response()->json(['message' => 'Product not found'], 404);
+}
+
+49. What is token expiry?
+Answer: Token expiry means token becomes invalid after a fixed time. It improves security for API authentication.
+
+50. What is refresh token?
+Answer: Refresh token is used to generate new access token without asking user to login again. Mostly used in OAuth/JWT systems.
+
+Machine Round Questions with Answers / Approach
+Machine Round 1: Create Product CRUD API
+
+Question:
+Create REST API for Product module with create, list, detail, update, and delete.
+
+Expected Answer / Approach:
+Create migration, model, API controller, routes, validation, and JSON response. Use apiResource.
+
+Example Routes:
+
+Route::apiResource('products', ProductController::class);
+
+Important Points to Explain:
+Use validation, proper status codes, pagination in listing, and return consistent JSON response.
+
+Machine Round 2: Login and Register API using Sanctum
+
+Question:
+Create register, login, profile, and logout API using Laravel Sanctum.
+
+Expected Answer / Approach:
+Validate user data, hash password, create token on login/register, protect profile/logout routes using auth:sanctum.
+
+Example Protected Route:
+
+Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
+
+Important Points to Explain:
+Never return password. Use Hash::make(), Hash::check(), token authentication, and proper error response.
+
+Machine Round 3: Product Listing API with Search, Filter, Sorting, Pagination
+
+Question:
+Create API to list products with search by name, filter by category/status, sorting, and pagination.
+
+Expected Answer / Approach:
+Use query parameters and apply conditions using when().
+
+Example:
+
+$products = Product::query()
+    ->when($request->search, function ($q) use ($request) {
+        $q->where('name', 'like', '%' . $request->search . '%');
+    })
+    ->when($request->category_id, function ($q) use ($request) {
+        $q->where('category_id', $request->category_id);
+    })
+    ->when($request->status, function ($q) use ($request) {
+        $q->where('status', $request->status);
+    })
+    ->orderBy($request->sort_by ?? 'id', $request->sort_order ?? 'desc')
+    ->paginate(10);
+
+Important Points to Explain:
+Use pagination, indexes on filter columns, and validate sort fields to avoid wrong query.
+
+Machine Round 4: Image Upload API
+
+Question:
+Create API to upload product image.
+
+Expected Answer / Approach:
+Use multipart/form-data, validate file type/size, store file in public disk, and save path in database.
+
+Example:
+
+$request->validate([
+    'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+]);
+
+$path = $request->file('image')->store('products', 'public');
+
+$product->update([
+    'image' => $path
+]);
+
+Important Points to Explain:
+Validate image, do not trust original filename, store generated path, and use storage:link.
+
+Machine Round 5: Category and Product Relationship API
+
+Question:
+Create category and product APIs where one category has many products.
+
+Expected Answer / Approach:
+Create categories and products tables. Add category_id in products table. Define hasMany and belongsTo.
+
+Example:
+
+// Category model
+public function products()
+{
+    return $this->hasMany(Product::class);
+}
+
+// Product model
+public function category()
+{
+    return $this->belongsTo(Category::class);
+}
+
+Important Points to Explain:
+Use foreign key, eager loading, and return category with products using with().
+
+Machine Round 6: Role-Based API Access
+
+Question:
+Create APIs where only admin can create/update/delete products, but normal users can only view products.
+
+Expected Answer / Approach:
+Add role column or roles table. Use middleware/policy to check user role.
+
+Example:
+
+if (auth()->user()->role !== 'admin') {
+    return response()->json(['message' => 'Unauthorized'], 403);
+}
+
+Important Points to Explain:
+Authentication checks logged-in user. Authorization checks user permission.
+
+Machine Round 7: Order Placement API
+
+Question:
+Create API where user can place order with multiple products.
+
+Expected Answer / Approach:
+Use orders table, order_items table, validate products, calculate total, and use database transaction.
+
+Example:
+
+DB::transaction(function () use ($request) {
+    $order = Order::create([
+        'user_id' => auth()->id(),
+        'total' => 0
+    ]);
+
+    foreach ($request->items as $item) {
+        $product = Product::findOrFail($item['product_id']);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => $item['quantity'],
+            'price' => $product->price
+        ]);
+    }
+});
+
+Important Points to Explain:
+Use transaction because order and order items must be saved together.
+
+Machine Round 8: Cart API
+
+Question:
+Create add to cart, update quantity, remove item, and cart list API.
+
+Expected Answer / Approach:
+Create carts table with user_id, product_id, quantity. If product already exists in cart, update quantity instead of duplicate insert.
+
+Example Logic:
+
+$cart = Cart::updateOrCreate(
+    [
+        'user_id' => auth()->id(),
+        'product_id' => $request->product_id
+    ],
+    [
+        'quantity' => $request->quantity
+    ]
+);
+
+Important Points to Explain:
+Validate product exists, user must be authenticated, and calculate cart total while listing.
+
+Machine Round 9: Forgot Password API
+
+Question:
+Create forgot password API and reset password API.
+
+Expected Answer / Approach:
+Validate email, generate token, send reset link/OTP, verify token, then update password.
+
+Important Points to Explain:
+Token should expire. Password should be hashed. Do not reveal whether email exists in sensitive systems.
+
+Machine Round 10: AJAX + Laravel CRUD
+
+Question:
+Create product CRUD using Laravel, jQuery, and AJAX without page reload.
+
+Expected Answer / Approach:
+Use Blade modal form, AJAX submit, Laravel validation, JSON response, and update table dynamically.
+
+Example AJAX:
+
+$.ajax({
+    url: '/products',
+    type: 'POST',
+    data: $('#productForm').serialize(),
+    success: function(response) {
+        alert(response.message);
+    },
+    error: function(xhr) {
+        console.log(xhr.responseJSON.errors);
+    }
+});
+
+Important Points to Explain:
+Handle CSRF token, validation errors, success response, edit data loading, and delete confirmation.
+
+Machine Round 11: Dependent Dropdown
+
+Question:
+Create country, state, city dependent dropdown using Laravel and AJAX.
+
+Expected Answer / Approach:
+On country change, call API to get states. On state change, call API to get cities.
+
+Example:
+
+$('#country').on('change', function() {
+    $.get('/states/' + this.value, function(states) {
+        $('#state').html(states);
+    });
+});
+
+Important Points to Explain:
+Use foreign keys, return options/JSON, and clear child dropdown when parent changes.
+
+Machine Round 12: Data Import API
+
+Question:
+Create API to import products from CSV/Excel.
+
+Expected Answer / Approach:
+Upload file, validate extension, read rows, validate each row, insert in chunks, and handle errors.
+
+Important Points to Explain:
+For large files, use queue and chunking. Return failed rows if validation fails.
+
+Machine Round 13: Export Report API
+
+Question:
+Create API to export orders report in CSV/Excel by date range.
+
+Expected Answer / Approach:
+Validate date range, query orders, generate CSV/Excel, and return downloadable file.
+
+Important Points to Explain:
+Use filters, avoid loading too much data, and queue export for large reports.
+
+Machine Round 14: Soft Delete API
+
+Question:
+Create delete, restore, and trash list API for users/products.
+
+Expected Answer / Approach:
+Use Laravel SoftDeletes. Delete sets deleted_at, restore clears it.
+
+Example:
+
+Product::findOrFail($id)->delete();
+
+Product::withTrashed()->findOrFail($id)->restore();
+
+Important Points to Explain:
+Soft delete is useful when data recovery is required.
+
+Machine Round 15: Activity Log
+
+Question:
+Create activity log when admin creates, updates, or deletes product.
+
+Expected Answer / Approach:
+Use observer or event/listener to store activity in activity_logs table.
+
+Example:
+
+ActivityLog::create([
+    'user_id' => auth()->id(),
+    'action' => 'Product updated',
+    'description' => 'Product price changed'
+]);
+
+Important Points to Explain:
+Observer keeps logging logic separate from controller.
+
+Common Machine Round Coding Tasks
+
+1. Create REST API CRUD for users/products/categories.
+
+2. Create login/register/logout API with token.
+
+3. Create AJAX CRUD with validation errors.
+
+4. Create image upload with preview and validation.
+
+5. Create search filter with pagination.
+
+6. Create dependent dropdown using AJAX.
+
+7. Create cart and order flow.
+
+8. Create role-based access control.
+
+9. Create import/export module.
+
+10. Create report API with date filter.
+
+How to Explain Machine Round in Interview
+
+Use this structure:
+
+1. Requirement understanding:
+“I will create routes, controller, model, migration, validation, and JSON response.”
+
+2. Database design:
+“I will create required tables with foreign keys and indexes.”
+
+3. API structure:
+“I will follow REST methods like GET, POST, PUT/PATCH, DELETE.”
+
+4. Validation and security:
+“I will validate request, use auth middleware, and return proper status codes.”
+
+5. Final response:
+“I will return consistent JSON response with status, message, data, and errors.”
+
+Example final API response:
+
+{
+  "status": true,
+  "message": "Product created successfully",
+  "data": {
+    "id": 1,
+    "name": "Laptop",
+    "price": 50000
+  }
+}

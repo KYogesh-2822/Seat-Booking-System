@@ -19,11 +19,13 @@
         </form>
 
     @else
-        <p>Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.</p>
+        <p>Scan this QR code with an authenticator app (Google Authenticator, Authy, Microsoft Authenticator, etc.), then enter the 6-digit code below to confirm.</p>
 
         <div class="qr">
             <img src="{{ $qrImageUrl }}" alt="QR code">
         </div>
+
+        <p>If scanning opens a URL or shows the raw text, that means your scanner app is not a TOTP authenticator. Use one of the supported authenticator apps, or enter the secret below manually:</p>
 
         <p>Secret: <strong>{{ $secret }}</strong></p>
 
