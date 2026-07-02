@@ -148,7 +148,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::middleware(['auth:admin', 'no-cache'])->group(function () {
     Route::resource('events', EventController::class)->except(['index', 'show']);
 
-    Route::prefix('stripe')->name('stripe.')->group(function () {
+    Route::prefix('stripe')->name('stripe.')->middleware(['vendor.mfa'])->group(function () {
         Route::get('/onboard', [StripeConnectController::class, 'start'])
             ->name('onboard');
 

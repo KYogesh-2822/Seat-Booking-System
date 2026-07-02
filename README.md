@@ -71,6 +71,46 @@ Seeded credentials (via `php artisan db:seed`):
 
 Event create/edit/update/destroy is locked behind `auth:admin`. Booking routes accept either guard (`auth:web,admin`).
 
+### Security model for admins and vendors
+
+The project applies a layered security approach for admin and vendor accounts:
+
+- **Password-based login** with Laravel Fortify and throttling for repeated attempts.
+- **Optional MFA for admins** using Google Authenticator-style TOTP. This is enforced before sensitive admin actions such as changing mail settings.
+- **Role-based access** so only authorized admin/vendor accounts can manage events, Stripe onboarding, and payment-related operations.
+- **Stripe Connect protection** for vendors, where payments are routed to the vendor’s connected Stripe account only after onboarding is complete.
+
+#### How admin MFA works
+
+1. An admin opens the MFA setup page.
+2. A temporary secret is generated and shown as a QR code.
+3. The admin enters a six-digit code from their authenticator app.
+4. If the code is valid, the secret is stored securely and MFA is enabled.
+5. When the admin tries to perform sensitive actions such as changing mail credentials, the system requires a fresh MFA confirmation.
+
+#### How vendor security works
+
+Vendors are protected through the same admin guard and Stripe Connect flow:
+
+1. A vendor logs in through the admin/vendor panel.
+2. The vendor can complete Stripe onboarding to create a connected account.
+3. Payments are only processed once the vendor’s Stripe account is fully onboarded and ready.
+4. Payment actions remain restricted to authenticated admin/vendor accounts, reducing the risk of unauthorized use.
+
+The MFA logic is intentionally centralized in a shared service so the same validation rules are reused and the code stays minimal.
+
+
+#### Admin and Vendor MFA how its wrok 
+
+Admin login: admin enters email/password, after successful login the system checks whether admin MFA is enabled; if enabled, admin must enter a 6-digit TOTP code before accessing protected admin actions.
+Vendor login: vendor enters email/password, after successful login the system checks whether the vendor account has MFA enabled; if not, access to vendor-sensitive Stripe/payment routes is blocked until MFA is set up.
+Admin MFA setup: admin goes to the MFA setup page, scans the QR code in an authenticator app, enters the generated code, and the secret is saved for future verification.
+Vendor MFA setup: vendor follows the same setup flow, and once the code is verified, the vendor can access protected vendor actions.
+Admin protected action flow: when admin tries to open sensitive areas like mail settings, the app asks for a fresh MFA code and only allows access if it matches.
+Vendor protected action flow: when vendor tries to access Stripe onboarding or other vendor-sensitive routes, the app checks MFA first and blocks access if it is not enabled.
+Login security: both admin and vendor logins use the same secure authentication flow, and MFA adds a second verification step on top of the password.
+
+
 ### Booker tracking
 
 Because bookings can now come from two different tables, `bookings.user_id` + `booker_type` (and `seats.locked_by` + `locked_by_type`) together identify who locked/booked a seat. The `App\Support\Booker` helper returns the active booker from whichever guard is logged in.

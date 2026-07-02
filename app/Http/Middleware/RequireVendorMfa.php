@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RequireEnabledMfa
+class RequireVendorMfa
 {
     public function __construct(protected AdminMfaService $mfaService)
     {
@@ -18,13 +18,13 @@ class RequireEnabledMfa
         $admin = $request->user('admin');
 
         if (! $admin) {
-            abort(403, 'Admin is not authenticated.');
+            abort(403, 'Vendor is not authenticated.');
         }
 
-        if (! $this->mfaService->isEnabled($admin)) {
-            abort(403, 'MFA must be enabled before managing mail settings.');
+        if (! $admin->isVendor() || $this->mfaService->isEnabled($admin)) {
+            return $next($request);
         }
 
-        return $next($request);
+        abort(403, 'MFA must be enabled before accessing vendor-sensitive actions.');
     }
 }

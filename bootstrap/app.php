@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'no-cache' => \App\Http\Middleware\NoCache::class,
             'mfa.enabled' => \App\Http\Middleware\RequireEnabledMfa::class,
             'mail.mfa' => \App\Http\Middleware\RequireMailSettingsMfa::class,
+            'vendor.mfa' => \App\Http\Middleware\RequireVendorMfa::class,
             'no.body.logs' => \App\Http\Middleware\DoNotLogRequestBody::class,
         ]);
 
